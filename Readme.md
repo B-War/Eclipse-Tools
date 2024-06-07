@@ -40,18 +40,18 @@ pip install .
 
 ## Contributing:
 
-    Contributions to Eclipse Tools are welcome! Feel free to submit bug reports, feature requests, or pull requests on the project's GitHub repository.
+Contributions to Eclipse Tools are welcome! Feel free to submit bug reports, feature requests, or pull requests on the project's GitHub repository.
 
 ## Acknowledgments:
 
-    The Eclipse Tools package was inspired by the Eclipse board game by Touko Tahkokallio.
+The Eclipse Tools package was inspired by the Eclipse board game by Touko Tahkokallio.
 
 ## Authors:
 
-    Ben Warwick
+Ben Warwick
 
 ## Note:
 
-    This README serves as a general guide to the Eclipse Tools package. For detailed documentation on individual functions and classes, please refer to the inline comments within the source code files.
+This README serves as a general guide to the Eclipse Tools package. For detailed documentation on individual functions and classes, please refer to the inline comments within the source code files.
 
 (Yes I used AI to make this Readme, sue me jk.)
