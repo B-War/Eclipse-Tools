@@ -38,19 +38,19 @@ Eclipse Tools is a Python package designed to assist with simulating combat scen
 pip install .
 ```
 
-# Contributing:
+## Contributing:
 
     Contributions to Eclipse Tools are welcome! Feel free to submit bug reports, feature requests, or pull requests on the project's GitHub repository.
 
-# Acknowledgments:
+## Acknowledgments:
 
     The Eclipse Tools package was inspired by the Eclipse board game by Touko Tahkokallio.
 
-# Authors:
+## Authors:
 
     Ben Warwick
 
-# Note:
+## Note:
 
     This README serves as a general guide to the Eclipse Tools package. For detailed documentation on individual functions and classes, please refer to the inline comments within the source code files.
 
