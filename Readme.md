@@ -36,6 +36,7 @@ Eclipse Tools is a Python package designed to assist with simulating combat scen
 
 ```bash
 pip install .
+```
 
 # Contributing:
 
