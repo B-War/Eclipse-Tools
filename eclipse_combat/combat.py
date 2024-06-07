@@ -1,7 +1,9 @@
 import random
 from tqdm import tqdm
+from tqdm.contrib.concurrent import process_map
 import itertools
 from .ship_types import SHIP_TYPES
+from timeit import default_timer as time
 
 # Define Rift Cannon sides
 RIFT_CANNON_SIDES = {
@@ -316,6 +318,8 @@ def simulate_combat():
             defender_wins += 1
             for ship_type in defender_counts:
                 defender_survivors[ship_type].append(sum(ship['type'] == ship_type for ship in defender_fleet))
+    end_time = time()
+    print(f"Simulated {iterations} combat iterations in {end_time - start_time:.2f} seconds.")
 
     attacker_survival_avg = {ship_type: sum(counts) / len(counts) if counts else 0 for ship_type, counts in
                              attacker_survivors.items()}
@@ -337,4 +341,94 @@ def simulate_combat():
         print(f"{ship_type}: {avg}")
     print(f"\nDefender survival average:")
     for ship_type, avg in results['defender_survival_avg'].items():
+        print(f"{ship_type}: {avg}")
+
+
+def simulate_combat_iteration(attacker_counts, defender_counts):
+    attacker_fleet = create_fleet(attacker_counts)
+    defender_fleet = create_fleet(defender_counts)
+
+    attacker_wins = 0
+    defender_wins = 0
+    attacker_survivors = {ship_type: [] for ship_type in attacker_counts}
+    defender_survivors = {ship_type: [] for ship_type in defender_counts}
+
+    missile_attack(attacker_fleet, defender_fleet)
+
+    while attacker_fleet and defender_fleet:
+        attacker_fleet, defender_fleet = simulate_combat_round(attacker_fleet, defender_fleet)
+
+    if attacker_fleet and not defender_fleet:
+        attacker_wins += 1
+        for ship_type in attacker_counts:
+            attacker_survivors[ship_type].append(sum(ship['type'] == ship_type for ship in attacker_fleet))
+
+    if defender_fleet and not attacker_fleet:
+        defender_wins += 1
+        for ship_type in defender_counts:
+            defender_survivors[ship_type].append(sum(ship['type'] == ship_type for ship in defender_fleet))
+
+    return attacker_wins, defender_wins, attacker_survivors, defender_survivors
+
+def simulate_combat_parallel():
+    print("Let's simulate a combat!")
+
+    def input_fleet(fleet_name):
+        fleet_counts = {}
+        print(f"Input the {fleet_name} fleet:")
+        while True:
+            print("Available ship types:")
+            for index, ship_name in enumerate(SHIP_TYPES.keys(), start=1):
+                print(f"{index}. {ship_name}")
+            choice = input("Enter the number of the ship type to add to the fleet (or leave blank to finish): ").strip()
+            if not choice:
+                break
+            if not choice.isdigit() or int(choice) < 1 or int(choice) > len(SHIP_TYPES):
+                print("Invalid choice. Please enter a valid number.")
+                continue
+            ship_type = list(SHIP_TYPES.keys())[int(choice) - 1]
+            count = int(input(f"Enter the number of '{ship_type}' ships: "))
+            fleet_counts[ship_type] = count
+        return fleet_counts
+
+
+    attacker_counts = input_fleet("attacker")
+    defender_counts = input_fleet("defender")
+    start_time = time()
+    iterations = int(input("Enter the number of combat iterations: "))
+
+    attacker_wins = 0
+    defender_wins = 0
+    attacker_survivors = {ship_type: [] for ship_type in attacker_counts}
+    defender_survivors = {ship_type: [] for ship_type in defender_counts}
+
+    results = process_map(simulate_combat_iteration, [attacker_counts] * iterations, [defender_counts] * iterations, chunksize=200)
+    end_time = time()
+    print(f"Simulated {iterations} combat iterations in {end_time - start_time:.2f} seconds.")
+    attacker_wins = sum(result[0] for result in results)
+    defender_wins = sum(result[1] for result in results)
+    for result in results:
+        for ship_type in attacker_counts:
+            attacker_survivors[ship_type].extend(result[2][ship_type])
+        for ship_type in defender_counts:
+            defender_survivors[ship_type].extend(result[3][ship_type])
+
+    attacker_survival_avg = {ship_type: sum(counts) / len(counts) if counts else 0 for ship_type, counts in
+                                attacker_survivors.items()}
+    defender_survival_avg = {ship_type: sum(counts) / len(counts) if counts else 0 for ship_type, counts in
+                                defender_survivors.items()}
+    final_results = {
+        'attacker_win_prob': attacker_wins / iterations,
+        'defender_win_prob': defender_wins / iterations,
+        'attacker_survival_avg': attacker_survival_avg,
+        'defender_survival_avg': defender_survival_avg
+    }
+    print(f"\nResults:\n{'-' * 20}")
+    print(f"Attacker win probability: {final_results['attacker_win_prob']}")
+    print(f"Defender win probability: {final_results['defender_win_prob']}")
+    print(f"\nAttacker survival average:")
+    for ship_type, avg in final_results['attacker_survival_avg'].items():
+        print(f"{ship_type}: {avg}")
+    print(f"\nDefender survival average:")
+    for ship_type, avg in final_results['defender_survival_avg'].items():
         print(f"{ship_type}: {avg}")
