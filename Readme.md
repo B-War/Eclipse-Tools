@@ -37,6 +37,7 @@ Eclipse Tools is a Python package designed to assist with simulating combat scen
 ```bash
 pip install .
 ```
+3. To ensure that the .json holding the ship types is then saved correctly it is recommended that you only run functions from the package outside of the eclipse_tools directory.
 
 ## Contributing:
 
