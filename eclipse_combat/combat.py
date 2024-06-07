@@ -295,6 +295,7 @@ def simulate_combat():
 
     iterations = int(input("Enter the number of combat iterations: "))
 
+    start_time = time()
     attacker_wins = 0
     defender_wins = 0
     attacker_survivors = {ship_type: [] for ship_type in attacker_counts}
@@ -345,6 +346,12 @@ def simulate_combat():
 
 
 def simulate_combat_iteration(attacker_counts, defender_counts):
+    """ Simulate one combat chain until one side is defeated
+    :param attacker_counts: Dictionary of ship types and their counts for the attacker
+    :param defender_counts: Dictionary of ship types and their counts for the defender
+    :return: Tuple of attacker wins, defender wins, attacker survivors, defender survivors
+
+    """
     attacker_fleet = create_fleet(attacker_counts)
     defender_fleet = create_fleet(defender_counts)
 
@@ -371,6 +378,9 @@ def simulate_combat_iteration(attacker_counts, defender_counts):
     return attacker_wins, defender_wins, attacker_survivors, defender_survivors
 
 def simulate_combat_parallel():
+    """ Simulate a battle in parallel.
+    :return: None
+    """
     print("Let's simulate a combat!")
 
     def input_fleet(fleet_name):
