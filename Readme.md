@@ -39,6 +39,10 @@ pip install .
 ```
 3. To ensure that the .json holding the ship types is then saved correctly it is recommended that you only run functions from the package outside of the eclipse_tools directory.
 
+## To Do
+- Implement ship types to use for constraining number of ships allowed in a fight.
+- Create neutral ship combat stratergy that applies their rules from the game.
+
 ## Contributing:
 
 Contributions to Eclipse Tools are welcome! Feel free to submit bug reports, feature requests, or pull requests on the project's GitHub repository.
