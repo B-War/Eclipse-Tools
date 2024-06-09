@@ -21,13 +21,13 @@ Eclipse Tools is a Python package designed to assist with simulating combat scen
 ## Usage:
 
 ### Ship Type Management:
-- Use the provided functions `create_ship_type()`, `update_ship_type()`, `list_ship_types()`, and `delete_ship_type()` to manage ship types.
+- Use the provided functions `create_ship_type`, `update_ship_type`, `list_ship_types`, and `delete_ship_type` to manage ship types.
 
 ### Fleet Creation:
-- Utilize the `create_fleet()` function to generate fleets based on specified ship type counts.
+- Utilize the `create_fleet` function to generate fleets based on specified ship type counts.
 
 ### Combat Simulation:
-- Execute combat simulations using the `simulate_combat()` or `simulate_combat_parallel()` function, which returns probabilities of win for both attacker and defender fleets, along with average survival rates of ships.
+- Execute combat simulations using the `simulate_combat` or `simulate_combat_parallel` function, which returns probabilities of win for both attacker and defender fleets, along with average survival rates of ships.
 
 ## Installation:
 
