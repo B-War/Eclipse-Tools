@@ -19,7 +19,7 @@ DEFAULT_SHIP_TYPES = {
                     'initiative': 1, 'antimatter_splitter': False},
     'Starbase': {'type': 'starbase', 'hull': 2, 'computer': 1, 'shield': 0, 'dice': {1: 1}, 'rift_cannon': 0, 'missiles': {},
                  'initiative': 4, 'antimatter_splitter': False},
-    'Ancient': {'type': 'neutral', 'hull': 1, 'computer': 1, 'shield': 0, 'dice': {1: 2}, 'rift_cannon': 0, 'missiles': {},
+    'Ancient': {'type': 'ancient', 'hull': 1, 'computer': 1, 'shield': 0, 'dice': {1: 2}, 'rift_cannon': 0, 'missiles': {},
                 'initiative': 2, 'antimatter_splitter': False},
     'GCDS': {'type': 'neutral', 'hull': 7, 'computer': 2, 'shield': 0, 'dice': {1: 4}, 'rift_cannon': 0, 'missiles': {}, 'initiative': 0,
              'antimatter_splitter': False},
@@ -57,38 +57,6 @@ def create_ship_type(name, attributes):
 def get_ship_type(name):
     return SHIP_TYPES.get(name)
 
-
-def update_ship_types_on_version_update():
-    global SHIP_TYPES
-
-    # Iterate through DEFAULT_SHIP_TYPES to update SHIP_TYPES
-    for name, default_attributes in DEFAULT_SHIP_TYPES.items():
-        print(default_attributes)
-        if name in SHIP_TYPES:
-            # Ship type already exists in SHIP_TYPES, update its attributes
-            ship_attributes = SHIP_TYPES[name]
-
-            # Create updated_attributes to ensure correct order
-            updated_attributes = {}
-
-            # Add attributes in the order defined in DEFAULT_SHIP_TYPES
-            for attr in default_attributes:
-                if attr in ship_attributes:
-                    updated_attributes[attr] = ship_attributes[attr]
-                else:
-                    updated_attributes[attr] = default_attributes[attr]
-
-            # Update SHIP_TYPES with updated_attributes
-            SHIP_TYPES[name] = updated_attributes
-        else:
-            continue
-
-    # Save updated SHIP_TYPES
-    save_ship_types()
-
-    print("Ship types updated successfully based on the new version.")
-
-
 def create_ship():
     print("Let's create a new ship type.")
 
@@ -106,7 +74,7 @@ def create_ship():
     attributes = {}
 
     # Define valid ship type options
-    valid_types = ['interceptor', 'cruiser', 'dreadnought', 'starbase', 'neutral']
+    valid_types = ['interceptor', 'cruiser', 'dreadnought', 'starbase', 'ancient', 'neutral']
 
     # Prompt user to select a ship type from the list of options
     print("Select the type of ship from the following options:")
@@ -181,7 +149,7 @@ def update_ship_type():
     for attr in ship:
         if attr == 'type':
             # Update ship type
-            valid_types = ['interceptor', 'cruiser', 'dreadnought', 'starbase', 'neutral']
+            valid_types = ['interceptor', 'cruiser', 'dreadnought', 'starbase', 'ancient', 'neutral']
             print("Select the new type of ship from the following options:")
             for index, ship_type in enumerate(valid_types, start=1):
                 print(f"{index}. {ship_type}")

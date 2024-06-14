@@ -268,27 +268,43 @@ def missile_attack(attacker, defender):
             allies = [ally for ally in defender if ally['hull'] >= 0]
             assign_missiles(ship, targets, allies)
 
+# Mapping of ship categories to their max counts
+SHIP_CATEGORY_LIMITS = {
+    'interceptor': 8,
+    'cruiser': 4,
+    'dreadnought': 2,
+    'starbase': 4,
+    'ancient': 2,
+    'neutral': 1
+}
+
+def input_fleet(fleet_name):
+    fleet_counts = {}
+    print(f"Input the {fleet_name} fleet:")
+    while True:
+        print("Available ship types:")
+        for index, ship_name in enumerate(SHIP_TYPES.keys(), start=1):
+            ship_type = SHIP_TYPES[ship_name]['type']
+            max_count = SHIP_CATEGORY_LIMITS.get(ship_type, 0)
+            print(f"{index}. {ship_name} (Category: {ship_type}, Max: {max_count})")
+        choice = input("Enter the number of the ship type to add to the fleet (or leave blank to finish): ").strip()
+        if not choice:
+            break
+        if not choice.isdigit() or int(choice) < 1 or int(choice) > len(SHIP_TYPES):
+            print("Invalid choice. Please enter a valid number.")
+            continue
+        ship_name = list(SHIP_TYPES.keys())[int(choice) - 1]
+        ship_type = SHIP_TYPES[ship_name]['type']
+        max_count = SHIP_CATEGORY_LIMITS.get(ship_type, 0)
+        count = int(input(f"Enter the number of '{ship_name}' ships (max {max_count}): "))
+        if count > max_count:
+            print(f"Exceeded maximum allowed count of {ship_name} ({max_count}). Using {max_count}.")
+            count = max_count
+        fleet_counts[ship_name] = count
+    return fleet_counts
 
 def simulate_combat():
     print("Let's simulate a combat!")
-
-    def input_fleet(fleet_name):
-        fleet_counts = {}
-        print(f"Input the {fleet_name} fleet:")
-        while True:
-            print("Available ship types:")
-            for index, ship_name in enumerate(SHIP_TYPES.keys(), start=1):
-                print(f"{index}. {ship_name}")
-            choice = input("Enter the number of the ship type to add to the fleet (or leave blank to finish): ").strip()
-            if not choice:
-                break
-            if not choice.isdigit() or int(choice) < 1 or int(choice) > len(SHIP_TYPES):
-                print("Invalid choice. Please enter a valid number.")
-                continue
-            ship_type = list(SHIP_TYPES.keys())[int(choice) - 1]
-            count = int(input(f"Enter the number of '{ship_type}' ships: "))
-            fleet_counts[ship_type] = count
-        return fleet_counts
 
     attacker_counts = input_fleet("attacker")
     defender_counts = input_fleet("defender")
@@ -383,32 +399,11 @@ def simulate_combat_parallel():
     """
     print("Let's simulate a combat!")
 
-    def input_fleet(fleet_name):
-        fleet_counts = {}
-        print(f"Input the {fleet_name} fleet:")
-        while True:
-            print("Available ship types:")
-            for index, ship_name in enumerate(SHIP_TYPES.keys(), start=1):
-                print(f"{index}. {ship_name}")
-            choice = input("Enter the number of the ship type to add to the fleet (or leave blank to finish): ").strip()
-            if not choice:
-                break
-            if not choice.isdigit() or int(choice) < 1 or int(choice) > len(SHIP_TYPES):
-                print("Invalid choice. Please enter a valid number.")
-                continue
-            ship_type = list(SHIP_TYPES.keys())[int(choice) - 1]
-            count = int(input(f"Enter the number of '{ship_type}' ships: "))
-            fleet_counts[ship_type] = count
-        return fleet_counts
-
-
     attacker_counts = input_fleet("attacker")
     defender_counts = input_fleet("defender")
     start_time = time()
     iterations = int(input("Enter the number of combat iterations: "))
 
-    attacker_wins = 0
-    defender_wins = 0
     attacker_survivors = {ship_type: [] for ship_type in attacker_counts}
     defender_survivors = {ship_type: [] for ship_type in defender_counts}
 
