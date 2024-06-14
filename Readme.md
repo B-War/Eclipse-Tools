@@ -1,6 +1,6 @@
 # Eclipse Tools
 
-Eclipse Tools is a Python package designed to assist with simulating combat scenarios in the context of the Eclipse board game. It provides functionalities to create fleets, define ship types, simulate combat rounds, and analyze combat outcomes.
+Eclipse Tools is a Python package designed to assist with simulating combat scenarios in the context of the Eclipse board game. It provides functionalities to create fleets, define ship types, simulate combat rounds, and analyze combat outcomes. **Note the current targeting stratergy tries to assign hits in the way that a player might, this means it will likely perform better than the targetting rules of non-player control ships.**
 
 ## Features:
 
@@ -40,7 +40,6 @@ pip install .
 3. To ensure that the .json holding the ship types is then saved correctly it is recommended that you only run functions from the package outside of the eclipse_tools directory.
 
 ## To Do
-- Implement ship types to use for constraining number of ships allowed in a fight.
 - Create neutral ship combat stratergy that applies their rules from the game.
 
 ## Contributing:
