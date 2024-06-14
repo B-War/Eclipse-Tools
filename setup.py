@@ -16,7 +16,6 @@ setup(
             'simulate_combat = eclipse_combat.combat:simulate_combat',
             'simulate_combat_parallel = eclipse_combat.combat:simulate_combat_parallel',
             'reset_ship_types = eclipse_combat.ship_types:reset_ship_types_to_defaults',
-            'version_update_ship_types = eclipse_combat.ship_types:update_ship_types_on_version_update',
         ],
     },
 )
