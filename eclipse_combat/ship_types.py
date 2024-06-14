@@ -90,9 +90,9 @@ def create_ship():
 
     attributes['type'] = valid_types[int(type_choice) - 1]
 
-    attributes['hull'] = float(input("Enter the hull points (an integer): "))
-    attributes['computer'] = float(input("Enter the computer points (an integer): "))
-    attributes['shield'] = float(input("Enter the shield points (an integer): "))
+    attributes['hull'] = int(input("Enter the hull points (an integer): "))
+    attributes['computer'] = int(input("Enter the computer points (an integer): "))
+    attributes['shield'] = int(input("Enter the shield points (an integer): "))
 
     dice_count = int(input("Enter the number of different damage dice (0 to skip): "))
     if dice_count > 0:
@@ -119,7 +119,9 @@ def create_ship():
         attributes['missiles'] = {}
 
     attributes['initiative'] = int(input("Enter the ships initiative (an integer): "))
-    attributes['antimatter_splitter'] = bool(input("Does the ship have antimatter splitter (True or False): "))
+    # Correct way to handle bool input
+    antimatter_splitter_input = input("Does the ship have antimatter splitter (True or False): ").strip()
+    attributes['antimatter_splitter'] = antimatter_splitter_input == 'True'
 
     create_ship_type(name, attributes)
 
@@ -161,7 +163,7 @@ def update_ship_type():
                 ship[attr] = selected_type
             else:
                 print("Invalid choice. Ship type not updated.")
-        if isinstance(ship[attr], dict):
+        elif isinstance(ship[attr], dict):
             if attr == 'dice' or attr == 'missiles':
                 count = input(f"Enter the number of different {attr} (current: {ship[attr]}) (0 to clear, Enter to skip): ").strip()
                 if count.isdigit():
@@ -180,7 +182,7 @@ def update_ship_type():
             if value:
                 ship[attr] = value.lower() in ['true', '1', 'yes', 'y']
         else:
-            value = input(f"{attr} (current: {ship[attr]}): ").strip()
+            value = input(f"Enter new {attr} value (current: {ship[attr]}): ").strip()
             if value:
                 if attr in ['hull', 'computer', 'shield', 'rift_cannon', 'initiative']:
                     ship[attr] = int(value)
