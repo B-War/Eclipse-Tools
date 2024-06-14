@@ -11,19 +11,19 @@ SHIP_TYPES_FILE = os.path.join(PACKAGE_DIR, "ship_types.json")
 
 # Default ship types
 DEFAULT_SHIP_TYPES = {
-    'Interceptor': {'hull': 0, 'computer': 0, 'shield': 0, 'dice': {1: 1}, 'rift_cannon': 0, 'missiles': {},
+    'Interceptor': {'type': 'interceptor', 'hull': 0, 'computer': 0, 'shield': 0, 'dice': {1: 1}, 'rift_cannon': 0, 'missiles': {},
                     'initiative': 3, 'antimatter_splitter': False},
-    'Cruiser': {'hull': 1, 'computer': 1, 'shield': 0, 'dice': {1: 1}, 'rift_cannon': 0, 'missiles': {},
+    'Cruiser': {'type': 'cruiser', 'hull': 1, 'computer': 1, 'shield': 0, 'dice': {1: 1}, 'rift_cannon': 0, 'missiles': {},
                 'initiative': 2, 'antimatter_splitter': False},
-    'Dreadnought': {'hull': 2, 'computer': 1, 'shield': 0, 'dice': {1: 2}, 'rift_cannon': 0, 'missiles': {},
+    'Dreadnought': {'type': 'dreadnought', 'hull': 2, 'computer': 1, 'shield': 0, 'dice': {1: 2}, 'rift_cannon': 0, 'missiles': {},
                     'initiative': 1, 'antimatter_splitter': False},
-    'Starbase': {'hull': 2, 'computer': 1, 'shield': 0, 'dice': {1: 1}, 'rift_cannon': 0, 'missiles': {},
+    'Starbase': {'type': 'starbase', 'hull': 2, 'computer': 1, 'shield': 0, 'dice': {1: 1}, 'rift_cannon': 0, 'missiles': {},
                  'initiative': 4, 'antimatter_splitter': False},
-    'Ancient': {'hull': 1, 'computer': 1, 'shield': 0, 'dice': {1: 2}, 'rift_cannon': 0, 'missiles': {},
+    'Ancient': {'type': 'neutral', 'hull': 1, 'computer': 1, 'shield': 0, 'dice': {1: 2}, 'rift_cannon': 0, 'missiles': {},
                 'initiative': 2, 'antimatter_splitter': False},
-    'GCDS': {'hull': 7, 'computer': 2, 'shield': 0, 'dice': {1: 4}, 'rift_cannon': 0, 'missiles': {}, 'initiative': 0,
+    'GCDS': {'type': 'neutral', 'hull': 7, 'computer': 2, 'shield': 0, 'dice': {1: 4}, 'rift_cannon': 0, 'missiles': {}, 'initiative': 0,
              'antimatter_splitter': False},
-    'Guardian': {'hull': 2, 'computer': 2, 'shield': 0, 'dice': {1: 3}, 'rift_cannon': 0, 'missiles': {},
+    'Guardian': {'type': 'neutral', 'hull': 2, 'computer': 2, 'shield': 0, 'dice': {1: 3}, 'rift_cannon': 0, 'missiles': {},
                  'initiative': 3, 'antimatter_splitter': False},
 }
 
@@ -44,6 +44,11 @@ def save_ship_types():
     with open(SHIP_TYPES_FILE, "w") as file:
         json.dump(SHIP_TYPES, file)
 
+def reset_ship_types_to_defaults():
+    global SHIP_TYPES
+    SHIP_TYPES = DEFAULT_SHIP_TYPES
+    save_ship_types()
+    print("Ship types reset to defaults successfully!")
 
 def create_ship_type(name, attributes):
     SHIP_TYPES[name] = attributes
@@ -51,6 +56,37 @@ def create_ship_type(name, attributes):
 
 def get_ship_type(name):
     return SHIP_TYPES.get(name)
+
+
+def update_ship_types_on_version_update():
+    global SHIP_TYPES
+
+    # Iterate through DEFAULT_SHIP_TYPES to update SHIP_TYPES
+    for name, default_attributes in DEFAULT_SHIP_TYPES.items():
+        print(default_attributes)
+        if name in SHIP_TYPES:
+            # Ship type already exists in SHIP_TYPES, update its attributes
+            ship_attributes = SHIP_TYPES[name]
+
+            # Create updated_attributes to ensure correct order
+            updated_attributes = {}
+
+            # Add attributes in the order defined in DEFAULT_SHIP_TYPES
+            for attr in default_attributes:
+                if attr in ship_attributes:
+                    updated_attributes[attr] = ship_attributes[attr]
+                else:
+                    updated_attributes[attr] = default_attributes[attr]
+
+            # Update SHIP_TYPES with updated_attributes
+            SHIP_TYPES[name] = updated_attributes
+        else:
+            continue
+
+    # Save updated SHIP_TYPES
+    save_ship_types()
+
+    print("Ship types updated successfully based on the new version.")
 
 
 def create_ship():
@@ -68,6 +104,24 @@ def create_ship():
             return
 
     attributes = {}
+
+    # Define valid ship type options
+    valid_types = ['interceptor', 'cruiser', 'dreadnought', 'starbase', 'neutral']
+
+    # Prompt user to select a ship type from the list of options
+    print("Select the type of ship from the following options:")
+    for index, ship_type in enumerate(valid_types, start=1):
+        print(f"{index}. {ship_type}")
+
+    type_choice = input("Enter the number corresponding to the ship type: ")
+
+    # Validate user input
+    if not type_choice.isdigit() or not (1 <= int(type_choice) <= len(valid_types)):
+        print("Invalid choice.")
+        return
+
+    selected_type = valid_types[int(type_choice) - 1]
+
     attributes['hull'] = float(input("Enter the hull points (an integer): "))
     attributes['computer'] = float(input("Enter the computer points (an integer): "))
     attributes['shield'] = float(input("Enter the shield points (an integer): "))
@@ -125,6 +179,20 @@ def update_ship_type():
     print("Enter the new values for the attributes you want to update. Press Enter to skip an attribute.")
 
     for attr in ship:
+        if attr == 'type':
+            # Update ship type
+            valid_types = ['interceptor', 'cruiser', 'dreadnought', 'starbase', 'neutral']
+            print("Select the new type of ship from the following options:")
+            for index, ship_type in enumerate(valid_types, start=1):
+                print(f"{index}. {ship_type}")
+
+            type_choice = input(f"Enter the number corresponding to the new ship type (current: {ship[attr]}): ")
+
+            if type_choice.isdigit() and (1 <= int(type_choice) <= len(valid_types)):
+                selected_type = valid_types[int(type_choice) - 1]
+                ship[attr] = selected_type
+            else:
+                print("Invalid choice. Ship type not updated.")
         if isinstance(ship[attr], dict):
             if attr == 'dice' or attr == 'missiles':
                 count = input(f"Enter the number of different {attr} (current: {ship[attr]}) (0 to clear, Enter to skip): ").strip()
