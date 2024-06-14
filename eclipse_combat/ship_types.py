@@ -88,7 +88,7 @@ def create_ship():
         print("Invalid choice.")
         return
 
-    selected_type = valid_types[int(type_choice) - 1]
+    attributes['type'] = valid_types[int(type_choice) - 1]
 
     attributes['hull'] = float(input("Enter the hull points (an integer): "))
     attributes['computer'] = float(input("Enter the computer points (an integer): "))
